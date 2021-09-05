@@ -13,4 +13,12 @@ import javax.persistence.Entity;
 public class Book extends Item{
     private String author;
     private String isbn;
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                '}';
+    }
 }
