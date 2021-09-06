@@ -6,6 +6,7 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
 import org.assertj.core.api.Assertions;
@@ -32,17 +33,8 @@ class OrderServiceTest {
     @Test
     public void 상품주문() throws Exception{
         //given
-        Member member = new Member();
-        member.setName("Zero");
-        member.setAddress(new Address("서울", "강가", "123-123"));
-        em.persist(member);
-
-        Item item = new Book();
-        item.setName("시골 책");
-        item.setPrice(10000);
-        item.setStockQuantity(10);
-        em.persist(item);
-
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10);
         int orderCount = 2;
 
         ///When
@@ -51,24 +43,64 @@ class OrderServiceTest {
         //Then
         Order getOrder = orderRepository.findOne(orderId);
         assertEquals("상품 주문시 상태는 ORDER", OrderStatus.ORDER, getOrder.getStatus());
+        assertEquals("주문한 상품 종류 수가 정확해야 한다.", 1, getOrder.getOrderItems().size());
+        assertEquals("주문 가격은 가격 * 수량이다.", 10000 * orderCount, getOrder.getTotalPrice());
+        assertEquals("주문 수량만큼 재고가 줄어야 한다.", 8, item.getStockQuantity());
+
+    }
+
+    //@Test(expected = NotEnoughStockException.class)
+    @Test
+    public void 상품주문_재고수량초과() throws Exception{
+        //given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10);
+        int orderCount = 11;
+
+        //when
+        try{
+            Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
+        }catch(NotEnoughStockException e){
+            return;
+        }
+
+        //then
+        fail("재고수량 예외가 발생해야한다");
     }
 
     @Test
     public void 주문취소() throws Exception{
         //given
+        Member member = createMember();
+        Book item = createBook("시골 JPA", 10000, 10);
+        int orderCount = 2;
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
 
         //when
+        orderService.cancleOrder(orderId);
 
         //then
+        Order getOrder = orderRepository.findOne(orderId);
+
+        assertEquals("주문 취소 시 상태는 CANCLE이다.", OrderStatus.CANCLE, getOrder.getStatus());
+        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다",10, item.getStockQuantity());
     }
 
-    @Test
-    public void 상품주문_재고수량초과() throws Exception{
-        //given
+    private Book createBook(String name, int price, int stockQuantity) {
+        Book book = new Book();
+        book.setName(name);
+        book.setPrice(price);
+        book.setStockQuantity(stockQuantity);
+        em.persist(book);
+        return book;
+    }
 
-        //when
-
-        //then
+    private Member createMember() {
+        Member member = new Member();
+        member.setName("Zero");
+        member.setAddress(new Address("서울", "강가", "123-123"));
+        em.persist(member);
+        return member;
     }
 
 }
