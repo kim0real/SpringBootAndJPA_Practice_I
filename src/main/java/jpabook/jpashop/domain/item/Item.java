@@ -37,9 +37,11 @@ public abstract class Item { //상품
     /**
      * stock 감소
      */
-    public void removeStock(int quantity){
-        int restStock = this.stockQuantity - quantity;
-        if (restStock < 0 ){
+    public void removeStock(int orderQuantity) {
+        System.out.println("this.stockQuantity:"+this.stockQuantity);
+        System.out.println("orderQuantity:"+orderQuantity);
+        int restStock = this.stockQuantity - orderQuantity;
+        if (restStock < 0) {
             throw new NotEnoughStockException("need more stock");
         }
         this.stockQuantity = restStock;

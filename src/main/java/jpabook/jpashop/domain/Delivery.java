@@ -8,19 +8,18 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 public class Delivery {
     @Id @GeneratedValue
     @Column(name = "delivery_id")
     private Long id;
 
-    @OneToOne(mappedBy = "delivery", fetch = LAZY)
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Order order;
 
     @Embedded
     private Address address;
 
-    @Enumerated(EnumType.STRING) //ORDINAL 사용금지
-    private DeliveryStatus status; //READY, COMP
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status; //ENUM [READY(준비), COMP(배송)]
 }
