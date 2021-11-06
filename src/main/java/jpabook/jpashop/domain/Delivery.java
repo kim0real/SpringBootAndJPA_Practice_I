@@ -8,9 +8,11 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 public class Delivery {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "delivery_id")
     private Long id;
 

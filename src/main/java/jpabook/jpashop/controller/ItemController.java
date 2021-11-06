@@ -25,7 +25,7 @@ public class ItemController {
     }
 
     @PostMapping("items/new")
-    public String create(BookForm form){
+    public String create(BookForm form) {
         Book book = new Book();
         /* Setter로 지정해주는 것보다는 생성 메소드를 사용하는 것이 바람직하다.
         book.setName(form.getName());
@@ -41,7 +41,7 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public String selectItems(Model model){
+    public String selectItems(Model model) {
         List<Item> items = itemService.findItems();
         model.addAttribute("items", items);
 
@@ -49,7 +49,7 @@ public class ItemController {
     }
 
     @GetMapping("items/{itemId}/edit")
-    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model){
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model) {
         Book item = (Book) itemService.findOne(itemId);
 
         BookForm form = new BookForm();
@@ -66,7 +66,7 @@ public class ItemController {
     }
 
     @PostMapping("items/{itemId}/edit")
-    public String updateItem(BookForm form, @PathVariable Long itemId){
+    public String updateItem(BookForm form, @PathVariable Long itemId) {
         Book book = new Book();
 
         //book = book.createBook(form);

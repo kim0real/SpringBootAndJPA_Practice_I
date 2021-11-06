@@ -26,12 +26,15 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @Transactional
 class OrderServiceTest {
-    @Autowired EntityManager em;
-    @Autowired OrderService orderService;
-    @Autowired OrderRepository orderRepository;
+    @Autowired
+    EntityManager em;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    OrderRepository orderRepository;
 
     @Test
-    public void 상품주문() throws Exception{
+    public void 상품주문() throws Exception {
         //given
         Member member = createMember();
         Item item = createBook("시골 JPA", 10000, 10);
@@ -51,16 +54,16 @@ class OrderServiceTest {
 
     //@Test(expected = NotEnoughStockException.class)
     @Test
-    public void 상품주문_재고수량초과() throws Exception{
+    public void 상품주문_재고수량초과() throws Exception {
         //given
         Member member = createMember();
         Item item = createBook("시골 JPA", 10000, 10);
         int orderCount = 11;
 
         //when
-        try{
+        try {
             Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
-        }catch(NotEnoughStockException e){
+        } catch (NotEnoughStockException e) {
             return;
         }
 
@@ -69,7 +72,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void 주문취소() throws Exception{
+    public void 주문취소() throws Exception {
         //given
         Member member = createMember();
         Book item = createBook("시골 JPA", 10000, 10);
@@ -83,7 +86,7 @@ class OrderServiceTest {
         Order getOrder = orderRepository.findOne(orderId);
 
         assertEquals("주문 취소 시 상태는 CANCLE이다.", OrderStatus.CANCLE, getOrder.getStatus());
-        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다",10, item.getStockQuantity());
+        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다", 10, item.getStockQuantity());
     }
 
     private Book createBook(String name, int price, int stockQuantity) {

@@ -26,7 +26,7 @@ public class OrderController {
     private final ItemService itemService;
 
     @GetMapping("/order")
-    public String createForm(Model model){
+    public String createForm(Model model) {
         List<Member> members = memberService.findMember();
         List<Item> items = itemService.findItems();
 
@@ -39,7 +39,7 @@ public class OrderController {
     @PostMapping("/order")
     public String order(@RequestParam("memberId") Long memberId,
                         @RequestParam("itemId") Long itemId,
-                        @RequestParam("count") int count){
+                        @RequestParam("count") int count) {
         System.out.println("parameter:" + memberId);
         System.out.println("parameter:" + itemId);
         System.out.println("parameter:" + count);

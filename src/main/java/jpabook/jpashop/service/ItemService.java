@@ -18,7 +18,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional
-    public void saveItem(Item item){
+    public void saveItem(Item item) {
         itemRepository.save(item);
     }
 
@@ -34,11 +34,11 @@ public class ItemService {
         findItem.setStockQuantity(stockQuantity);
     }
 
-    public List<Item> findItems(){
+    public List<Item> findItems() {
         return itemRepository.findAll();
     }
 
-    public Item findOne(Long id){
+    public Item findOne(Long id) {
         return itemRepository.findOne(id);
     }
 }

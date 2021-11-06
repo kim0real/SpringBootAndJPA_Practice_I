@@ -19,15 +19,18 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @Transactional
 class MemberServiceTest {
-    @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
-    @Autowired EntityManager em;
+    @Autowired
+    MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     // persist는 기본적으로 insert문이 Rollback되나 @Rollback(false)를 추가하면 실제로 insert된다.
     // 또는 then절에 em.flush();를 추가해줘도 된다.
     @Rollback(false)
-    public void 회원가입(){
+    public void 회원가입() {
         //given
         Member member = new Member();
         member.setName("Zero");
@@ -42,7 +45,7 @@ class MemberServiceTest {
 
     @Test
     //@Test(expected = IllegalStateException.class)
-    public void 중복_회원_예외(){
+    public void 중복_회원_예외() {
         //given
         Member member1 = new Member();
         member1.setName("Elon");
@@ -51,9 +54,9 @@ class MemberServiceTest {
 
         //when
         memberService.join(member1);
-        try{
+        try {
             memberService.join(member2); //예외가 발생해야한다.
-        }catch(IllegalStateException e){
+        } catch (IllegalStateException e) {
             return;
         }
 

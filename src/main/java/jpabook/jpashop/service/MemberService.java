@@ -25,7 +25,7 @@ public class MemberService {
 
     //회원가입
     @Transactional // 메소드 위에 붙인 트랜잭션이 클래스 위의 트랜잭션보다 우선권을 가진다.
-    public Long join(Member member){
+    public Long join(Member member) {
         validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
@@ -33,20 +33,20 @@ public class MemberService {
 
     private void validateDuplicateMember(Member member) {
         List<Member> findMembers = memberRepository.findByName(member.getName());
-        if(!findMembers.isEmpty()){
+        if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
     //회원 전체조회
     @Transactional
-    public List<Member> findMember(){
+    public List<Member> findMember() {
         return memberRepository.findAll();
     }
 
     //회원 조회
     @Transactional
-    public Member findOne(Long memberId){
+    public Member findOne(Long memberId) {
         return memberRepository.findOne(memberId);
     }
 }

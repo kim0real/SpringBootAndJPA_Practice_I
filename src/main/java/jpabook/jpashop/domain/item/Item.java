@@ -28,18 +28,20 @@ public abstract class Item { //상품
     private List<Category> categories = new ArrayList<>();
 
     //Business Logic
+
     /**
      * stock 증가
      */
-    public void addStock(int quantity){
+    public void addStock(int quantity) {
         this.stockQuantity += quantity;
     }
+
     /**
      * stock 감소
      */
     public void removeStock(int orderQuantity) {
-        System.out.println("this.stockQuantity:"+this.stockQuantity);
-        System.out.println("orderQuantity:"+orderQuantity);
+        System.out.println("this.stockQuantity:" + this.stockQuantity);
+        System.out.println("orderQuantity:" + orderQuantity);
         int restStock = this.stockQuantity - orderQuantity;
         if (restStock < 0) {
             throw new NotEnoughStockException("need more stock");

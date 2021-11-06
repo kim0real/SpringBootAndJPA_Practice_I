@@ -11,7 +11,8 @@ public class Address {
     private String street;
     private String zipcode;
 
-    protected Address() {} //JPA에서 @Embeddable 또는 @Entitiy는 기본생성자 : Protected까지 허용
+    protected Address() {
+    } //JPA에서 @Embeddable 또는 @Entitiy는 기본생성자 : Protected까지 허용
 
     public Address(String city, String street, String zipcode) {
         this.city = city;

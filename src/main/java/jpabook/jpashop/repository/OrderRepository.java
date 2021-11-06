@@ -11,12 +11,13 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class OrderRepository {
     private final EntityManager em;
 
-    public void save(Order order){
+    public void save(Order order) {
         em.persist(order);
     }
 
@@ -26,7 +27,7 @@ public class OrderRepository {
 
     /**
      * jpql : 실무에서는 쓰지않음
-     * */
+     */
     //join은 left를 따로 써주지않을경우 inner join이다.
     public List<Order> findAllByString(OrderSearch orderSearch) {
         //language=JPAQL
@@ -65,7 +66,7 @@ public class OrderRepository {
 
     /**
      * JPA Criteria : 실무에서는 쓰지않음
-     * */
+     */
     public List<Order> findAllByCriteria(OrderSearch orderSearch) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
@@ -92,7 +93,7 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000건
         return query.getResultList();
     }
-    
+
     /**
      * QueryDSL은 추후 기술
      * */
