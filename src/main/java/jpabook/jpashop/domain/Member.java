@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.aspectj.weaver.ast.Or;
@@ -17,8 +18,11 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
     private String name;
+
     @Embedded
     private Address address;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 }

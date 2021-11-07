@@ -26,7 +26,14 @@ public class OrderRepository {
     }
 
     /**
-     * jpql : 실무에서는 쓰지않음
+     * 실무에서는 JPQL을 거의 쓰지 않는다.
+     *
+     * 간단한 기능은 스프링 데이터 JPA로 해결하며
+     * 복잡한 쿼리를 구현해야 할 때는 JPQL이나 QueryDSL 둘 중 하나를 고민하게 되는데
+     *
+     * QueryDSL은 스프링 데이터 JPA와 함께 사용하려면 커스텀 리포지토리를 넣어주어야하므로
+     * 보다 간단한 기능이라면 스프링 데이터 JPA가 제공하는 @Query 어노테이션을 통해 JPQL을 인터페이스에서 바로 작성하고
+     * 끝낼 수 있다.
      */
     //join은 left를 따로 써주지않을경우 inner join이다.
     public List<Order> findAllByString(OrderSearch orderSearch) {
@@ -92,6 +99,17 @@ public class OrderRepository {
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000건
         return query.getResultList();
+    }
+
+
+    public List<Order> findAllWithMemberDelivery() {
+        List<Order> resultList = em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+
+        return resultList;
     }
 
     /**
