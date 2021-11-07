@@ -1,36 +1,14 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-public class MemberRepository {
-    @PersistenceContext
-    private EntityManager em;
-
-    public void save(Member member) {
-        em.persist(member);
-    }
-
-    public Member findOne(Long id) {
-        return em.find(Member.class, id);
-    }
-
-    public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class)
-                .getResultList();
-    }
-
-    public List<Member> findByName(String name) {
-        return em.createQuery("select m from Member m where m.name = :name",
-                        Member.class)
-                .setParameter("name", name)
-                .getResultList();
-    }
+//Spring Data JPA 맛보기 - 기존 MemberRepository는 MemberRepositoryOld로 변경
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    /**
+     * 아래처럼 선언만 해도 findBy'Name'을 캐치해
+     * select m from Member m where m.name = :name 의 쿼리를 만들어준다.
+     */
+    List<Member> findByName(String name);
 }

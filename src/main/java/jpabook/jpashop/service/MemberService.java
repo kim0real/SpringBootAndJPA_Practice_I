@@ -2,9 +2,7 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +14,7 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    //RequiredArgsConstructor에서 만들어준다.
+    // RequiredArgsConstructor에서 만들어준다.
     /*
     @Autowired
     public MemberService(MemberRepository memberRepository) {
@@ -32,6 +30,7 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
+        // findByName는 Spring Data JPA에서 제공해주지 않으므로 직접 만들어야 한다.
         List<Member> findMembers = memberRepository.findByName(member.getName());
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
@@ -47,17 +46,18 @@ public class MemberService {
     // 회원 조회
     @Transactional
     public Member findOne(Long memberId) {
-        return memberRepository.findOne(memberId);
+        return memberRepository.findById(memberId).get();
     }
 
     @Transactional
     /**
      * update 메서드에서 Member를 리턴하는 것은 커맨드와 쿼리를 동시에 쓰는 것이 되는데
      * 커맨드와 쿼리를 분리한다는 강사님의 개발 정책 상 그렇게 하는 것보다는
-     * void나 리턴하는 것이 바람직하다.(필요에 따라 id를 리턴할 때도 있다.)
+     * void를 리턴하는 것이 바람직하다.(필요에 따라 id를 리턴할 때도 있다.)
      */
     public void update(Long id, String name){
-        Member member = memberRepository.findOne(id);
+        //Spring Data JPA에서는 findOne()을 findById()로 제공한다.
+        Member member = memberRepository.findById(id).get();
         member.setName(name); // 변경감지를 통한 update
     }
 

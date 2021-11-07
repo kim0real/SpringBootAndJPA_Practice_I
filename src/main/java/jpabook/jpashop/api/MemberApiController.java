@@ -27,8 +27,8 @@ public class MemberApiController {
 
     @GetMapping("/api/v2/members")
     /**
-     * API를 설계할 떄 membersV1처럼 엔티티 자체를 외부로 노출시키는 것은 여러가지 문제점이 있다.(엔티티가 변경되면 API 스펙이 변경되어야 함
-     * 때문에 아래처럼 DTO를 따르 만들어 이를 반환하는 것이 좋다.
+     * API를 설계할 떄 위처럼 엔티티 자체를 외부로 노출시키는 것은 여러가지 문제점이 있다.(엔티티가 변경되면 API 스펙이 변경되어야 함)
+     * 때문에 꼭 아래처럼 DTO를 따르 만들어 이를 반환하는 것이 좋다.
      */
     public Result membersV2() {
         List<Member> members = memberService.findMembers();
@@ -36,7 +36,7 @@ public class MemberApiController {
                 .map(m -> new MemberDTO(m.getName()))
                 .collect(Collectors.toList());
 
-        // Entity가 아닌 Result를 반환할 경우 원하는 데이터를 추가적으로 반환할 수 있다.(count)
+        // Entity가 아닌 Result를 반환할 경우 반환값을 다루기 용이하기 때문에 추가적으로 원하는 데이터를 반환할 수 있다.(count)
         return new Result(collect.size(), collect);
     }
 
@@ -65,7 +65,7 @@ public class MemberApiController {
 
     @PostMapping("/api/v2/members")
     /**
-     * API를 설계할 떄 saveMemberV1처럼 엔티티 자체를 파라미터로 받는 것은 문제의 여지가 있다.
+     * API를 설계할 떄 saveMemberV1처럼 엔티티 자체를 파라미터로 받는 것또한 문제의 여지가 있다.
      * 때문에 아래처럼 DTO를 따르 만들어 파라미터로 받는 것이 좋다.
      * 아래와 같이 작성하면 API를 호출할 때 어떤 파라미터가 필요한지 CraeteMemberRequest를 보고 한 눈에 알 수 있다.
      */
