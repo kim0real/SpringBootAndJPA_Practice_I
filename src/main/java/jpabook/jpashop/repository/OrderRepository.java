@@ -1,8 +1,9 @@
 package jpabook.jpashop.repository;
 
-import jpabook.jpashop.domain.Member;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -28,13 +29,11 @@ public class OrderRepository {
 
     /**
      * 실무에서는 JPQL을 거의 쓰지 않는다.
-     *
-     * 간단한 기능은 스프링 데이터 JPA로 해결하며
+     * 간단한 기능은 스프링 데이터 JPA로 해결하며(웬만한 CRUD는 제공해주므로)
      * 복잡한 쿼리를 구현해야 할 때는 JPQL이나 QueryDSL 둘 중 하나를 고민하게 되는데
      *
-     * QueryDSL은 스프링 데이터 JPA와 함께 사용하려면 커스텀 리포지토리를 넣어주어야하므로
-     * 보다 간단한 기능이라면 스프링 데이터 JPA가 제공하는 @Query 어노테이션을 통해 JPQL을 인터페이스에서 바로 작성하고
-     * 끝낼 수 있다.
+     * QueryDSL를 보통 사용하나 DSL은 스프링 데이터 JPA와 함께 사용하려면 커스텀 리포지토리를 넣어주어야하므로
+     * 보다 간단한 기능이라면 스프링 데이터 JPA가 제공하는 @Query 어노테이션을 통해 JPQL을 인터페이스에서 바로 작성하고 끝낼 수 있긴하다.
      */
     // join은 left를 따로 써주지않을경우 inner join이다.
     public List<Order> findAllByString(OrderSearch orderSearch) {
@@ -73,7 +72,7 @@ public class OrderRepository {
     }
 
     /**
-     * JPA Criteria : 실무에서는 쓰지않음
+     * JPA Criteria : 비효율적 - 실무에서는 쓰지않음
      */
     public List<Order> findAllByCriteria(OrderSearch orderSearch) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -113,6 +112,34 @@ public class OrderRepository {
         return resultList;
     }
 
+    // QueryDSL 맛보기
+    public List<Order> findAll(OrderSearch orderSearch) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if (!StringUtils.hasText(memberName)) {
+            return null;
+        }
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond) {
+        if (statusCond == null) {
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
+
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
         List<Order> resultList = em.createQuery(
                         "select o from Order o" +
@@ -139,8 +166,4 @@ public class OrderRepository {
                         " join fetch oi.item i", Order.class)
                 .getResultList();
     }
-
-    /**
-     * QueryDSL은 추후 기술
-     * */
 }
