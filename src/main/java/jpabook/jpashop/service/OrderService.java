@@ -37,6 +37,7 @@ public class OrderService {
         Order order = Order.createOrder(member, delivery, orderItem);
 
         //주문 저장
+        //CascadeType.ALL로 인해 주문을 save하면 배송정보와 주문상품도 save된다.
         orderRepository.save(order);
         return order.getId();
     }

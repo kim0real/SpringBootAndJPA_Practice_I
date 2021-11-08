@@ -29,17 +29,18 @@ class MemberServiceTest {
     @Test
     // persist는 기본적으로 insert문이 Rollback되나 @Rollback(false)를 추가하면 실제로 insert된다.
     // 또는 then절에 em.flush();를 추가해줘도 된다.
-    @Rollback(false)
+    // @Rollback(false)
     public void 회원가입() {
-        //given
+        // given
         Member member = new Member();
         member.setName("Zero");
 
-        //when
+        // when
         Long savedId = memberService.join(member);
 
-        //then
-        //Assertions.assertThat(savedId).isEqualTo(member);
+        // then
+        // Assertions.assertThat(savedId).isEqualTo(member);
+        // em.flush() - em.persist()는 기본적으로 insert문이 console에 출력되지 않으며 em.flush()를 추가해줘야 출력된다.
         assertEquals(member, memberRepository.findOne(savedId));
     }
 
