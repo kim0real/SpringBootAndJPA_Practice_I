@@ -23,6 +23,7 @@ class MemberServiceTest {
     MemberService memberService;
     @Autowired
     MemberRepositoryOld memberRepository;
+
     @Autowired
     EntityManager em;
 
